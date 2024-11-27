@@ -15,6 +15,6 @@ router.get("/find/:id", getUser);
 
 router.delete("/:id", verifyToken, deleteUser);
 
-router.put(":/follow/:id", verifyToken, follow);
+router.put("/follow/:id", verifyToken, follow);
 
 export default router;

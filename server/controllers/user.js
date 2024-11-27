@@ -10,34 +10,36 @@ export async function getUser(req, res, next) {
 }
 
 export async function updateUser(req, res, next) {
-  if (req.params.id === req.user.id) {
-    try {
-      res.status(200).json(
+  try {
+    if (req.params.id !== req.user.id) {
+      return next(handleError(403, "Sólo puedes actualizar tu propia cuenta."));
+    }
+
+    res
+      .status(200)
+      .json(
         await User.findByIdAndUpdate(
           req.params.id,
-          {
-            $set: req.body,
-          },
-          {
-            new: true,
-          }
+          { $set: req.body },
+          { new: true }
         )
       );
-    } catch (err) {
-      next(err);
-    }
-  } else
-    return next(handleError(403, "Sólo puedes actualizar tu propia cuenta."));
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function deleteUser(req, res, next) {
-  if (req.params.id === req.user.id) {
-    try {
-      res.status(200).json(await User.findByIdAndDelete(req.params.id));
-    } catch (err) {
-      next(err);
+  try {
+    if (req.params.id !== req.user.id) {
+      return next(handleError(403, "Sólo puedes borrar to propia cuenta."));
     }
-  } else return next(handleError(403, "Sólo puedes borrar tu propia cuenta."));
+
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Cuenta borrada." });
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function follow(req, res, next) {
