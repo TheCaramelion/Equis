@@ -11,8 +11,7 @@ import { handleError } from "../error.js";
  */
 export async function signup(req, res, next) {
   try {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(req.body.password, salt);
+    const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
     const newUser = new User({ ...req.body, password: hash });
 
     await newUser.save();
