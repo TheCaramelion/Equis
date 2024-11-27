@@ -9,7 +9,7 @@ import authRouter from "./routes/auth.js";
 const app = express();
 dotenv.config();
 
-const connect = () => {
+function connect() {
   mongoose.set("strictQuery", false);
   mongoose
     .connect(process.env.MONGO)
@@ -19,9 +19,9 @@ const connect = () => {
     .catch((err) => {
       throw err;
     });
-};
+}
 
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(express.json());
 app.use("/api/users", userRouters);
 app.use("/api/auth", authRouter);
