@@ -45,6 +45,22 @@ export async function deleteUser(req, res, next) {
 export async function follow(req, res, next) {
   if (req.params.id === req.user.id) {
     try {
+      const user = await User.findById(req.params.id);
+
+      const currentUser = await User.findById(req.body.id);
+
+      if (!user.followers.includes(req.body.id)) {
+        await user.updateOne({
+          $push: { followers: req.body.id },
+        });
+
+        await currentUser.updateOne({
+          $push: { following: req.params.id },
+        });
+      } else {
+        res.status(403).json("Ya estás siguiendo este usuario.");
+      }
+      res.status(200).json("Siguiendo al usuario.");
     } catch (err) {
       next(err);
     }
