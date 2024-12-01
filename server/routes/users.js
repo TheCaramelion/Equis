@@ -4,6 +4,7 @@ import {
   updateUser,
   deleteUser,
   follow,
+  unfollow,
 } from "../controllers/user.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -16,5 +17,7 @@ router.get("/find/:id", getUser);
 router.delete("/:id", verifyToken, deleteUser);
 
 router.put("/follow/:id", verifyToken, follow);
+
+router.put("/unfollow/:id", verifyToken, unfollow);
 
 export default router;

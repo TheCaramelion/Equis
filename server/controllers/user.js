@@ -69,3 +69,30 @@ export async function follow(req, res, next) {
       handleError(403, "Sólo puedes seguir a alguien con tu propia cuenta.")
     );
 }
+
+export async function unfollow(req, res, next) {
+  if (req.params.id === req.user.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.id);
+
+      if (currentUser.following.includes(req.params.id)) {
+        await user.updateOne({
+          $pull: { followers: req.body.id },
+        });
+
+        await currentUser.updateOne({
+          $pull: { following: req.params.id },
+        });
+      } else {
+        res.status(403).json("No estás siguiendo este usuario.");
+      }
+      res.status(200).json("Dejando de seguir al usuario.");
+    } catch (err) {
+      next(err);
+    }
+  } else
+    return next(
+      handleError(403, "Sólo puedes seguir a alguien con tu propia cuenta.")
+    );
+}
