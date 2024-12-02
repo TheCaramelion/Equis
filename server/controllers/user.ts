@@ -1,5 +1,5 @@
-import { handleError } from "../error.js";
-import User from "../models/Users.js";
+import { handleError } from "../error.ts";
+import User from "../models/Users.ts";
 
 export async function getUser(req, res, next) {
   try {
@@ -49,12 +49,12 @@ export async function follow(req, res, next) {
 
       const currentUser = await User.findById(req.body.id);
 
-      if (!user.followers.includes(req.body.id)) {
-        await user.updateOne({
+      if (!user?.followers.includes(req.body.id)) {
+        await user?.updateOne({
           $push: { followers: req.body.id },
         });
 
-        await currentUser.updateOne({
+        await currentUser?.updateOne({
           $push: { following: req.params.id },
         });
       } else {
@@ -76,8 +76,8 @@ export async function unfollow(req, res, next) {
       const user = await User.findById(req.params.id);
       const currentUser = await User.findById(req.body.id);
 
-      if (currentUser.following.includes(req.params.id)) {
-        await user.updateOne({
+      if (currentUser?.following.includes(req.params.id)) {
+        await user?.updateOne({
           $pull: { followers: req.body.id },
         });
 

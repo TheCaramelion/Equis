@@ -5,8 +5,8 @@ import {
   deleteUser,
   follow,
   unfollow,
-} from "../controllers/user.js";
-import { verifyToken } from "../verifyToken.js";
+} from "../controllers/user.ts";
+import { verifyToken } from "../verifyToken.ts";
 
 const router = Router();
 

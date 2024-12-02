@@ -1,14 +1,9 @@
-import User from "../models/Users.js";
+import User from "../models/Users.ts";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { handleError } from "../error.js";
+import { handleError } from "../error.ts";
+import { jwtenv } from "../envcheck.ts";
 
-/**
- *
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
 export async function signup(req, res, next) {
   try {
     const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
@@ -16,7 +11,7 @@ export async function signup(req, res, next) {
 
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT);
+    const token = jwt.sign({ id: newUser._id }, jwtenv());
     const { password, ...othersData } = newUser._doc;
     res
       .cookie("access_token", token, {
@@ -29,13 +24,6 @@ export async function signup(req, res, next) {
   }
 }
 
-/**
- *
- * @param {*} req
- * @param {*} res
- * @param {*} next
- * @returns
- */
 export async function signin(req, res, next) {
   try {
     const user = await User.findOne({ username: req.body.username });
@@ -46,7 +34,7 @@ export async function signin(req, res, next) {
 
     if (!isCorrect) return next(handleError(400, "Contraseña erronea"));
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT);
+    const token = jwt.sign({ id: user._id }, jwtenv());
     const { password, ...othersData } = user._doc;
 
     res
